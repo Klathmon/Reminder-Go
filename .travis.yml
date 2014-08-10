@@ -11,5 +11,5 @@ before_install:
   - go get code.google.com/p/go.tools/cmd/cover
 
 script:
-    - go test -v -parallel=8 -race -cover -coverprofile=profile.out
-    - $HOME/gopath/bin/goveralls -coverprofile=profile.out -repotoken 04kTnPgwp65LWxqgAsuXnDazEahF5Wrht
+    - go test -v -parallel=8 -cover -coverprofile=profile.out
+    - $HOME/gopath/bin/goveralls -coverprofile=profile.out -repotoken TrwPM1p2YUjRXZx6cdSmjWHo9WOZBFoLY
