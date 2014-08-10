@@ -8,6 +8,7 @@ import (
 )
 
 func TestCreateNoteFromReaderGoodNote(t *testing.T) {
+	t.Parallel()
 	fileHandle, _ := os.Open("./test_files/goodJSONNote.json")
 
 	note, err := CreateNoteFromReader(fileHandle)
@@ -23,6 +24,7 @@ func TestCreateNoteFromReaderGoodNote(t *testing.T) {
 	}
 }
 func TestCreateNoteFromReaderGoodNoteNoDoneField(t *testing.T) {
+	t.Parallel()
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
 
 	note, err := CreateNoteFromReader(fileHandle)
@@ -38,6 +40,7 @@ func TestCreateNoteFromReaderGoodNoteNoDoneField(t *testing.T) {
 	}
 }
 func TestCreateNoteFromReaderGoodNoteRepeating(t *testing.T) {
+	t.Parallel()
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteRepeating.json")
 
 	note, err := CreateNoteFromReader(fileHandle)
@@ -55,6 +58,7 @@ func TestCreateNoteFromReaderGoodNoteRepeating(t *testing.T) {
 	}
 }
 func TestCreateNoteFromReaderBadNote(t *testing.T) {
+	t.Parallel()
 	fileHandle, _ := os.Open("./test_files/badJSONNote.json")
 
 	note, err := CreateNoteFromReader(fileHandle)
