@@ -8,6 +8,7 @@ go:
 before_install:
   - go get github.com/mattn/goveralls
   - go get code.google.com/p/go.tools/cmd/cover
+  - go get github.com/mattn/go-sqlite3
 
 script:
     - go test -v -parallel=8 -cover -coverprofile=profile.out
