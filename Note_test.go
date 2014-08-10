@@ -57,6 +57,22 @@ func TestCreateNoteFromReaderGoodNoteRepeating(t *testing.T) {
 		return
 	}
 }
+func TestCreateNoteFromReaderGoodNoteWithID(t *testing.T) {
+	t.Parallel()
+	fileHandle, _ := os.Open("./test_files/goodJSONNoteWithID.json")
+
+	note, err := CreateNoteFromReader(fileHandle)
+	if err != nil {
+		t.Error("Expected good result, got error (", err, ")")
+		return
+	}
+
+	if note.ID != 2 {
+		noteOutput, _ := json.Marshal(note)
+		t.Error("Did not get expected note text (", string(noteOutput), ")")
+		return
+	}
+}
 func TestCreateNoteFromReaderBadNote(t *testing.T) {
 	t.Parallel()
 	fileHandle, _ := os.Open("./test_files/badJSONNote.json")
