@@ -64,3 +64,90 @@ func TestCreateNoteGood(t *testing.T) {
 		t.Error("Note does not have an ID after being created in the database (", string(jsonstuff), ")")
 	}
 }
+
+func TestRetrieveNoteGood(t *testing.T) {
+	t.Parallel()
+
+	database, _ := prepareStatements(setupMockDatabase())
+
+	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
+	note, _ := CreateNoteFromReader(fileHandle)
+	database.CreateNote(note)
+
+	noteRetrieved, err := database.RetrieveNote(1)
+	if err != nil {
+		t.Error("Expected good result, got error (", err, ")")
+	}
+
+	if noteRetrieved.Text != "This is a test good note!" {
+		jsonstuff, _ := json.Marshal(noteRetrieved)
+		t.Error("Note retrieved from database does not have correct information (", string(jsonstuff), ")")
+	}
+}
+
+func TestRetrieveNoteBadID(t *testing.T) {
+	t.Parallel()
+
+	database, _ := prepareStatements(setupMockDatabase())
+
+	//Create a note
+	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
+	note, _ := CreateNoteFromReader(fileHandle)
+	database.CreateNote(note)
+
+	//Retrieve that note
+	noteRetrieved, err := database.RetrieveNote(6)
+	if err == nil {
+		jsonstuff, _ := json.Marshal(noteRetrieved)
+		t.Error("Expected error, got good result (", string(jsonstuff), ")")
+	}
+}
+
+func TestUpdateNoteGood(t *testing.T) {
+	t.Parallel()
+
+	database, _ := prepareStatements(setupMockDatabase())
+
+	//Create a note
+	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
+	note, _ := CreateNoteFromReader(fileHandle)
+	database.CreateNote(note)
+
+	//Update the note
+	note.Text = "Updated Text!"
+	err := database.UpdateNote(note)
+	if err != nil {
+		t.Error("Expected good result, got error (", err, ")")
+	}
+
+	//Retrieve the updated note to test
+	noteRetrieved, err := database.RetrieveNote(1)
+	if err != nil {
+		t.Error("Expected good result, got error (", err, ")")
+	}
+
+	if noteRetrieved.Text != "Updated Text!" {
+		jsonstuff, _ := json.Marshal(noteRetrieved)
+		t.Error("Note retrieved from database does not have correct information (", string(jsonstuff), ")")
+	}
+}
+
+func TestUpdateNoteBadID(t *testing.T) {
+	t.Parallel()
+
+	database, _ := prepareStatements(setupMockDatabase())
+
+	//Create a note
+	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
+	note, _ := CreateNoteFromReader(fileHandle)
+	database.CreateNote(note)
+
+	//Attempt to update the note
+	note.Text = "Updated Text!"
+	note.ID = 5
+	err := database.UpdateNote(note)
+	if err == nil {
+		jsonstuff, _ := json.Marshal(note)
+		t.Error("Expected error, got good result (", string(jsonstuff), ")")
+	}
+}
