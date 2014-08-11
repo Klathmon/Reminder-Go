@@ -8,16 +8,17 @@ import (
 
 /*
 Note holds a single note.
-For one-time notes, only the ID, DueDate, and NoteText need to be set.
-If Done is set to true, then the note has been "completed". The program should
-never automatically mark a note as completed, no matter how far past due.
+For one-time notes, DueDate and NoteText need to be set.If Done is set to true
+then the note has been "completed". The program should never automatically mark
+a note as completed, no matter how far past due.
 
 Recurring Notes:
 Set the DueDate for the next time the note will occur (if every week then set
-the due date to one week from now). When the note is retrieved the system should
-check if the DueDate has passed AND the note is Done. If those are true then
-create a new Note with a DueDate of the current note's NextDueDate, and a
-StartDate of the current note's DueDate.
+the due date to one week from now), and NextDueDate for the following time the
+note will occur (if every week thenset this to one week after the DueDate)
+When the note is retrieved the system should check if the DueDate has passed AND
+the note is Done. If those are true then create a new Note with a DueDate of the
+current note's NextDueDate, and a StartDate of the current note's DueDate.
 
 If a `StartDate` is set, then the note should not display to the user
 until the `StartDate` has passed.
