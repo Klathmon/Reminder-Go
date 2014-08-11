@@ -13,6 +13,7 @@ type Statements struct {
 	createNote   *sql.Stmt
 	updateNote   *sql.Stmt
 	retrieveNote *sql.Stmt
+	deleteNote   *sql.Stmt
 }
 
 func prepareStatements(sqlDBHandle *sql.DB) (*Statements, error) {
@@ -24,6 +25,7 @@ func prepareStatements(sqlDBHandle *sql.DB) (*Statements, error) {
 	database.createNote, err = database.db.Prepare("INSERT INTO Notes (startDate, dueDate, nextDueDate, done, noteText) VALUES (?, ?, ?, ?, ?)")
 	database.retrieveNote, err = database.db.Prepare("SELECT * FROM Notes WHERE ID=?")
 	database.updateNote, err = database.db.Prepare("UPDATE Notes SET startDate=?, dueDate=?, nextDueDate=?, done=?, noteText=? WHERE ID=?")
+	database.deleteNote, err = database.db.Prepare("DELETE FROM Notes WHERE ID=?")
 	if err != nil {
 		return &Statements{}, err
 	}
@@ -71,6 +73,25 @@ func (database *Statements) UpdateNote(note *Note) error {
 	rowsAffected, _ := execResult.RowsAffected()
 	if rowsAffected != 1 {
 		return errors.New("Update Affected more/less than one row (" + string(rowsAffected) + " rows affected)")
+	}
+
+	tx.Commit()
+	return nil
+}
+
+//DeleteNote completely removes a note from the database.
+//the passed note should not be used after this function
+func (database *Statements) DeleteNote(note *Note) error {
+	tx, _ := database.db.Begin()
+	defer tx.Rollback()
+
+	execResult, err := tx.Stmt(database.deleteNote).Exec(note.ID)
+	if err != nil {
+		return err
+	}
+	rowsAffected, _ := execResult.RowsAffected()
+	if rowsAffected != 1 {
+		return errors.New("Delete Affected more/less than one row (" + string(rowsAffected) + " rows affected)")
 	}
 
 	tx.Commit()

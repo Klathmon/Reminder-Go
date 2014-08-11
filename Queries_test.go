@@ -151,3 +151,46 @@ func TestUpdateNoteBadID(t *testing.T) {
 		t.Error("Expected error, got good result (", string(jsonstuff), ")")
 	}
 }
+
+func TestDeleteNoteGood(t *testing.T) {
+	t.Parallel()
+
+	database, _ := prepareStatements(setupMockDatabase())
+
+	//Create a note
+	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
+	note, _ := CreateNoteFromReader(fileHandle)
+	database.CreateNote(note)
+
+	//Delete the note
+	err := database.DeleteNote(note)
+	if err != nil {
+		t.Error("Expected good result, got error (", err, ")")
+	}
+
+	//attempt to retrieve the deleted note to test
+	noteRetrieved, err := database.RetrieveNote(1)
+	if err == nil {
+		jsonstuff, _ := json.Marshal(noteRetrieved)
+		t.Error("Expected error, got good result (", string(jsonstuff), ")")
+	}
+}
+
+func TestDeleteNoteBadID(t *testing.T) {
+	t.Parallel()
+
+	database, _ := prepareStatements(setupMockDatabase())
+
+	//Create a note
+	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
+	note, _ := CreateNoteFromReader(fileHandle)
+	database.CreateNote(note)
+
+	//Attempt to delete the note
+	note.ID = 5
+	err := database.DeleteNote(note)
+	if err == nil {
+		jsonstuff, _ := json.Marshal(note)
+		t.Error("Expected error, got good result (", string(jsonstuff), ")")
+	}
+}
