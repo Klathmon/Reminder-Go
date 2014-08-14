@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"testing"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -46,6 +47,40 @@ func TestPrepareBadQueries(t *testing.T) {
 	if err == nil {
 		jsonstuff, _ := json.Marshal(database)
 		t.Error("Expected error, got good result (", jsonstuff, ")")
+	}
+}
+
+func TestGetActiveNotesGood(t *testing.T) {
+	t.Parallel()
+
+	database, _ := prepareStatements(setupMockDatabase())
+
+	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
+	note, _ := CreateNoteFromReader(fileHandle)
+	database.CreateNote(note) //ID = 1
+	database.CreateNote(note) //ID = 2
+	database.CreateNote(note) //ID = 3
+	note.Done = true
+	database.CreateNote(note) //ID = 4
+	note.Done = false
+	note.StartDate = time.Now().AddDate(0, 0, 1)
+	database.CreateNote(note) //ID = 5
+
+	notesRetrieved, err := database.GetActiveNotes(0, 100)
+	if err != nil {
+		t.Error("Expected good result, got error (", err, ")")
+	}
+
+	if len(notesRetrieved) != 3 {
+		jsonstuff, _ := json.Marshal(notesRetrieved)
+		t.Error("Expected 3 notes, got ", len(notesRetrieved), " (", string(jsonstuff), ")")
+	}
+
+	for _, value := range notesRetrieved {
+		if value.ID != 1 && value.ID != 2 && value.ID != 3 {
+			jsonstuff, _ := json.Marshal(value)
+			t.Error("Got unexpected note returned (", string(jsonstuff), ")")
+		}
 	}
 }
 

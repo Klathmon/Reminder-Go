@@ -3,17 +3,19 @@ package Reminder
 import (
 	"database/sql"
 	"errors"
+	"time"
 )
 
 //Statements is a container struct for the Database.
 //It holds the connection to the DB as well as all prepared satements used
 //throughout the application.
 type Statements struct {
-	db           *sql.DB
-	createNote   *sql.Stmt
-	updateNote   *sql.Stmt
-	retrieveNote *sql.Stmt
-	deleteNote   *sql.Stmt
+	db             *sql.DB
+	getActiveNotes *sql.Stmt
+	createNote     *sql.Stmt
+	updateNote     *sql.Stmt
+	retrieveNote   *sql.Stmt
+	deleteNote     *sql.Stmt
 }
 
 func prepareStatements(sqlDBHandle *sql.DB) (*Statements, error) {
@@ -22,6 +24,7 @@ func prepareStatements(sqlDBHandle *sql.DB) (*Statements, error) {
 
 	database.db = sqlDBHandle
 
+	database.getActiveNotes, err = database.db.Prepare("SELECT * FROM Notes WHERE done = 0 AND startDate < ? LIMIT ? OFFSET ?")
 	database.createNote, err = database.db.Prepare("INSERT INTO Notes (startDate, dueDate, nextDueDate, done, noteText) VALUES (?, ?, ?, ?, ?)")
 	database.retrieveNote, err = database.db.Prepare("SELECT * FROM Notes WHERE ID=?")
 	database.updateNote, err = database.db.Prepare("UPDATE Notes SET startDate=?, dueDate=?, nextDueDate=?, done=?, noteText=? WHERE ID=?")
@@ -31,6 +34,27 @@ func prepareStatements(sqlDBHandle *sql.DB) (*Statements, error) {
 	}
 
 	return &database, nil
+}
+
+//GetActiveNotes gets all current (not done, and past their start date) notes.
+func (database *Statements) GetActiveNotes(startID int64, numberToReturn int) ([]*Note, error) {
+	rows, _ := database.getActiveNotes.Query(time.Now(), numberToReturn, startID)
+	defer rows.Close()
+
+	notes := []*Note{}
+
+	for rows.Next() {
+		note := &Note{}
+
+		err := rows.Scan(&note.ID, &note.StartDate, &note.DueDate, &note.NextDueDate, &note.Done, &note.Text)
+		if err != nil {
+			return []*Note{}, err
+		}
+
+		notes = append(notes, note)
+	}
+
+	return notes, nil
 }
 
 //CreateNote adds a new note to the system.
