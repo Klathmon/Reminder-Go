@@ -9,6 +9,7 @@ import (
 )
 
 func TestNewNoteGood(t *testing.T) {
+	t.Parallel()
 	db, _ := prepareStatements(setupMockDatabase())
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
 	testServer := httptest.NewServer(http.HandlerFunc(func(rWriter http.ResponseWriter, req *http.Request) {
@@ -28,6 +29,7 @@ func TestNewNoteGood(t *testing.T) {
 }
 
 func TestNewNoteBadRequest(t *testing.T) {
+	t.Parallel()
 	db, _ := prepareStatements(setupMockDatabase())
 	fileHandle, _ := os.Open("./test_files/badJSONNote.json")
 	testServer := httptest.NewServer(http.HandlerFunc(func(rWriter http.ResponseWriter, req *http.Request) {
