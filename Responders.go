@@ -29,8 +29,6 @@ func noteCreated(rWriter http.ResponseWriter, note *Note) {
 	setupRequest(rWriter)
 
 	encoder := json.NewEncoder(rWriter)
-
-	rWriter.WriteHeader(http.StatusOK)
 	encoder.Encode(note)
 }
 
@@ -38,7 +36,5 @@ func returnNotes(rWriter http.ResponseWriter, notes []*Note) {
 	setupRequest(rWriter)
 
 	encoder := json.NewEncoder(rWriter)
-
-	rWriter.WriteHeader(http.StatusOK)
 	encoder.Encode(notes)
 }
