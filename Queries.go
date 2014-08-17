@@ -37,7 +37,7 @@ func prepareStatements(sqlDBHandle *sql.DB) (*Statements, error) {
 }
 
 //GetActiveNotes gets all current (not done, and past their start date) notes.
-func (database *Statements) GetActiveNotes(startNumber int64, numberToReturn int) ([]*Note, error) {
+func (database *Statements) GetActiveNotes(startNumber int, numberToReturn int) ([]*Note, error) {
 	rows, _ := database.getActiveNotes.Query(time.Now(), numberToReturn, startNumber)
 	defer rows.Close()
 
