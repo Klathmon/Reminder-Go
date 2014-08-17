@@ -2,6 +2,7 @@ package Reminder
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 )
 
@@ -9,6 +10,12 @@ const (
 	//DefaultReturn is the default number of notes to return in a GET request
 	DefaultReturn = 100
 )
+
+func panicRecovery(rWriter http.ResponseWriter) {
+	if r := recover(); r != nil {
+		serverError(rWriter, errors.New("Server Panic!"))
+	}
+}
 
 /*
 NewNote creates a note in the system.
@@ -20,16 +27,14 @@ If an error occurs a 4xx or 5xx status will be returned along with more
 information about the error.
 */
 func NewNote(rWriter http.ResponseWriter, req *http.Request, db *Statements) {
+	defer panicRecovery(rWriter)
 
 	note, err := CreateNoteFromReader(req.Body)
 	if err != nil {
 		badRequest(rWriter, err)
 	}
 
-	err = db.CreateNote(note)
-	if err != nil {
-		serverError(rWriter, err)
-	}
+	db.CreateNote(note)
 
 	noteCreated(rWriter, note)
 }
@@ -43,6 +48,8 @@ numberToReturn: the amount of notes you want returned in one pass.
 	defaults to DefaultReturn
 */
 func GetActiveNotes(rWriter http.ResponseWriter, req *http.Request, db *Statements) {
+	defer panicRecovery(rWriter)
+
 	decoder := json.NewDecoder(req.Body)
 	var startNumber, numberToReturn int
 	var params map[string]int
