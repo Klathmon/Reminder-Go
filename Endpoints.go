@@ -47,9 +47,12 @@ func GetActiveNotes(rWriter http.ResponseWriter, req *http.Request, db *Statemen
 	var startNumber, numberToReturn int
 	var params map[string]int
 
-	err := decoder.Decode(params)
-	if err != nil {
-		badRequest(rWriter, err)
+	if req.ContentLength != 0 {
+		err := decoder.Decode(&params)
+		if err != nil {
+			badRequest(rWriter, err)
+			return
+		}
 	}
 
 	startNumber, exists := params["startNumber"]
