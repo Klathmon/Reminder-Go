@@ -18,7 +18,8 @@ type Statements struct {
 	deleteNote     *sql.Stmt
 }
 
-func prepareStatements(sqlDBHandle *sql.DB) (*Statements, error) {
+//PrepareStatements prepares all SQL queries that will be used throughout the application.
+func PrepareStatements(sqlDBHandle *sql.DB) (*Statements, error) {
 	var database Statements
 	var err error
 
