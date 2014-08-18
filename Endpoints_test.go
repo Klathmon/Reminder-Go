@@ -10,7 +10,7 @@ import (
 )
 
 func setupEndpointTests() *Statements {
-	db, _ := prepareStatements(setupMockDatabase())
+	db, _ := PrepareStatements(setupMockDatabase())
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
 	note, _ := CreateNoteFromReader(fileHandle)
 	db.CreateNote(note) //ID = 1
@@ -67,7 +67,7 @@ func TestNewNoteBadRequest(t *testing.T) {
 func TestNewNoteServerError(t *testing.T) {
 	t.Parallel()
 	tempdb, _ := sql.Open("sqlite3", ":memory:")
-	db, _ := prepareStatements(tempdb)
+	db, _ := PrepareStatements(tempdb)
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
 	testServer := httptest.NewServer(http.HandlerFunc(func(rWriter http.ResponseWriter, req *http.Request) {
 		NewNote(rWriter, req, db)

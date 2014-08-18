@@ -32,7 +32,7 @@ func setupMockDatabase() *sql.DB {
 
 func TestPrepareGoodQueries(t *testing.T) {
 	t.Parallel()
-	_, err := prepareStatements(setupMockDatabase())
+	_, err := PrepareStatements(setupMockDatabase())
 	if err != nil {
 		t.Error("Expected good result, got error (", err, ")")
 	}
@@ -43,7 +43,7 @@ func TestPrepareBadQueries(t *testing.T) {
 
 	db, _ := sql.Open("sqlite3", ":memory:")
 
-	database, err := prepareStatements(db)
+	database, err := PrepareStatements(db)
 	if err == nil {
 		jsonstuff, _ := json.Marshal(database)
 		t.Error("Expected error, got good result (", jsonstuff, ")")
@@ -53,7 +53,7 @@ func TestPrepareBadQueries(t *testing.T) {
 func TestGetActiveNotesGood(t *testing.T) {
 	t.Parallel()
 
-	database, _ := prepareStatements(setupMockDatabase())
+	database, _ := PrepareStatements(setupMockDatabase())
 
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
 	note, _ := CreateNoteFromReader(fileHandle)
@@ -87,7 +87,7 @@ func TestGetActiveNotesGood(t *testing.T) {
 func TestCreateNoteGood(t *testing.T) {
 	t.Parallel()
 
-	database, _ := prepareStatements(setupMockDatabase())
+	database, _ := PrepareStatements(setupMockDatabase())
 
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
 	note, _ := CreateNoteFromReader(fileHandle)
@@ -103,7 +103,7 @@ func TestCreateNoteGood(t *testing.T) {
 func TestRetrieveNoteGood(t *testing.T) {
 	t.Parallel()
 
-	database, _ := prepareStatements(setupMockDatabase())
+	database, _ := PrepareStatements(setupMockDatabase())
 
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
 	note, _ := CreateNoteFromReader(fileHandle)
@@ -123,7 +123,7 @@ func TestRetrieveNoteGood(t *testing.T) {
 func TestRetrieveNoteBadID(t *testing.T) {
 	t.Parallel()
 
-	database, _ := prepareStatements(setupMockDatabase())
+	database, _ := PrepareStatements(setupMockDatabase())
 
 	//Create a note
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
@@ -141,7 +141,7 @@ func TestRetrieveNoteBadID(t *testing.T) {
 func TestUpdateNoteGood(t *testing.T) {
 	t.Parallel()
 
-	database, _ := prepareStatements(setupMockDatabase())
+	database, _ := PrepareStatements(setupMockDatabase())
 
 	//Create a note
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
@@ -170,7 +170,7 @@ func TestUpdateNoteGood(t *testing.T) {
 func TestUpdateNoteBadID(t *testing.T) {
 	t.Parallel()
 
-	database, _ := prepareStatements(setupMockDatabase())
+	database, _ := PrepareStatements(setupMockDatabase())
 
 	//Create a note
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
@@ -190,7 +190,7 @@ func TestUpdateNoteBadID(t *testing.T) {
 func TestDeleteNoteGood(t *testing.T) {
 	t.Parallel()
 
-	database, _ := prepareStatements(setupMockDatabase())
+	database, _ := PrepareStatements(setupMockDatabase())
 
 	//Create a note
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
@@ -214,7 +214,7 @@ func TestDeleteNoteGood(t *testing.T) {
 func TestDeleteNoteBadID(t *testing.T) {
 	t.Parallel()
 
-	database, _ := prepareStatements(setupMockDatabase())
+	database, _ := PrepareStatements(setupMockDatabase())
 
 	//Create a note
 	fileHandle, _ := os.Open("./test_files/goodJSONNoteNoDoneField.json")
