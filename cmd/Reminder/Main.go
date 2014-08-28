@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Klathmon/Reminder"
+	"github.com/Klathmon/Reminder-Go"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
 )

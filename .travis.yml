@@ -12,4 +12,4 @@ before_install:
 
 script:
     - go test -v -parallel=8 -cover -coverprofile=profile.out
-    - $HOME/gopath/bin/goveralls -coverprofile=profile.out -repotoken TrwPM1p2YUjRXZx6cdSmjWHo9WOZBFoLY
+    - $HOME/gopath/bin/goveralls -coverprofile=profile.out -repotoken iZDbGzLhqizHfuzhbnCiOtHqM7wd597bE
