@@ -40,6 +40,22 @@ func NewNote(rWriter http.ResponseWriter, req *http.Request, db *Statements) {
 }
 
 /*
+DeleteNote completely removes a note from the database.
+*/
+func DeleteNote(rWriter http.ResponseWriter, req *http.Request, db *Statements) {
+	defer panicRecovery(rWriter)
+
+	note, err := CreateNoteFromReader(req.Body)
+	if err != nil {
+		badRequest(rWriter, err)
+	}
+
+	db.DeleteNote(note)
+
+	return200Status(rWriter)
+}
+
+/*
 GetActiveNotes gets all active notes within the parameters provided.
 The request can contain a JSON key-value pair of the following:
 startNumber: the number of results to skip before returning new results (used for pagination)

@@ -7,6 +7,7 @@ import (
 
 func setupRequest(rWriter http.ResponseWriter) {
 	rWriter.Header().Set("Server", "Go")
+	rWriter.Header().Set("Access-Control-Allow-Origin", "*") //Leave this here for now (for development)
 }
 
 func badRequest(rWriter http.ResponseWriter, err error) {
@@ -30,6 +31,12 @@ func noteCreated(rWriter http.ResponseWriter, note *Note) {
 
 	encoder := json.NewEncoder(rWriter)
 	encoder.Encode(note)
+}
+
+func return200Status(rWriter http.ResponseWriter) {
+	setupRequest(rWriter)
+
+	rWriter.WriteHeader(http.StatusOK)
 }
 
 func returnNotes(rWriter http.ResponseWriter, notes []*Note) {
